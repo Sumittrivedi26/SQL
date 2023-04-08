@@ -1,0 +1,137 @@
+create database Covid
+use Covid
+create table covid_data(
+    Date_reported date,
+	Country_code varchar(45),
+    Country	varchar(45),
+    WHO_region varchar(45),
+	New_cases int,
+	Cumulative_cases int,
+	New_deaths int,
+	Cumulative_deaths int)
+    
+LOAD DATA LOCAL INFILE 
+"Users/sumittrivedi/Downloads/WHO-COVID-19-global-data.csv"
+INTO TABLE covid_data
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+
+-- selecting all rows and all columns of dataset.
+SELECT * FROM covid_data
+
+-- selecting total regions in world health organization.
+select distinct(WHO_region) from covid_data
+
+-- counting total distinct regions
+select count(distinct(WHO_region)) as total_regions from covid_data
+--7
+
+-- identifying region that comed under other.
+select count(WHO_region) from covid_data where WHO_region= 'Other'
+-- 1190
+select * from covid_data where WHO_region= 'Other'
+
+-- deleting region = other
+delete from covid_data where WHO_region= 'Other'
+
+select * from covid_data where WHO_region= 'Other'
+-- none
+
+select * from covid_data
+
+-- count Country
+select count(Country) as country from covid_data
+-- 280840
+
+-- distinct countries
+select count(distinct(Country)) as country from covid_data
+-- 236
+
+-- displaying only country code and name of country
+select distinct(Country_code),Country from covid_data
+
+-- number of countries per region
+select distinct(WHO_region), count(distinct(Country))as country from covid_data
+group by WHO_region
+
+-- total case in perticular region
+select distinct(WHO_region), sum(New_cases) as total_case from covid_data
+group by WHO_region order by total_case
+
+
+-- total case in region and country
+select distinct(WHO_region),Country, sum(New_cases) as total_case from covid_data
+group by WHO_region, Country
+
+
+-- yearwise total cases
+select sum(New_cases) as total_case, year(Date_reported) as Year from covid_data
+ group by year(Date_reported)
+
+-- Country and yearwise total cases
+select Country, sum(New_cases) as total_case, year(Date_reported) as Year from covid_data
+ group by Country, Year
+
+
+-- Country and yearwise total deaths
+select Country, sum(New_deaths) as total_death, year(Date_reported) as Year from covid_data
+ group by Country, Year
+
+
+-- name of all the countries in 2020 with no covid cases
+select * from
+(select country, sum(New_cases) as total_case, year(Date_reported) as Year from covid_data
+group by year, country) as a 
+where total_case = 0 and Year = 2020
+-- 14 countries where in 2020 covid case were zero
+
+
+-- name of all the countries in 2021 with 0 covid cases
+select * from
+(select country, sum(New_cases) as total_case, year(Date_reported) as Year from covid_data
+group by year, country) as a 
+where total_case = 0 and Year = 2021
+-- 13 countries
+
+-- name of all the countries in 2022 with 0 covid cases
+select * from
+(select country, sum(New_cases) as total_case, year(Date_reported) as Year from covid_data
+group by year, country) as a 
+where total_case = 0 and Year = 2022
+-- 3 countries
+
+-- count of all the countries in 2023 with 0 covid cases
+select count(country) from
+(select country, sum(New_cases) as total_case, year(Date_reported) as Year from covid_data
+group by year, country) as a 
+where total_case = 0 and Year = 2023
+-- 34 countries
+
+-- name of all the countries in 2023 with 0 covid cases
+select * from
+(select country, sum(New_cases) as total_case, year(Date_reported) as Year from covid_data
+group by year, country) as a 
+where total_case = 0 and Year = 2023
+
+-- top five countries yearwise cases
+select * from
+	(
+    select country, Year, total_case, Dense_rank() over(partition by Year order by total_case desc) rnk from
+		(
+        select country, sum(New_cases) as total_case, year(Date_reported) as Year from covid_data
+			group by year, country
+		)a
+	)b where rnk <= 5
+
+
+-- top five countries yearwise death
+select * from
+	(
+    select country, Year, total_deaths, Dense_rank() over(partition by Year order by total_deaths desc) rnk from
+		(
+        select country, sum(New_deaths) as total_deaths, year(Date_reported) as Year from covid_data
+			group by year, country
+		)a
+	)b where rnk <= 5
