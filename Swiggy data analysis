@@ -1,0 +1,81 @@
+
+
+create database swiggy
+use swiggy
+
+select * from swiggydata
+
+drop table swiggydata
+
+select * from swiggydata
+
+Total number of distinct restaurants
+SELECT COUNT(DISTINCT(Restaurant_name)) from swiggydata
+
+total number of restaurant where rating=5
+SELECT COUNT(Restaurant_name) from swiggydata where Ratings = 5
+
+total number of restaurant where rating > 4
+select count(Restaurant_name) from swiggydata where Ratings > 4
+
+ALL THE CUSINES AVIALBLE IN THE RESTAURANTS
+SELECT DISTINCT(Type) FROM swiggydata
+
+SELECT COUNT(DISTINCT(Type)) FROM swiggydata
+
+how many veg restaurant are there
+select count(Restaurant_name) from swiggydata where `Veg/Nonveg` = "Veg"
+
+haw many nonveg restaurants are there
+select count(Restaurant_name) from swiggydata where `Veg/Nonveg`="Non-Veg"
+
+select count(Restaurant_name) as count_of_veg_nonveg from swiggydata group by `Veg/Nonveg`
+
+
+veg restaurant with rating > 4
+select * from swiggydata where Ratings>4 and `Veg/Nonveg`= "Veg"
+
+select count(*) from swiggydata where Ratings>4 and `Veg/Nonveg`= "Veg"
+
+nonveg restaurant with rating > 4
+select * from swiggydata where Ratings>4 and `Veg/Nonveg`= "Non-Veg"
+
+select count(*) from swiggydata where Ratings>4 and `Veg/Nonveg`= "Non-Veg"
+
+restaurant having cost of 2 greater then 400
+select * from swiggydata where Cost_for_2 > 400
+
+select count(*) from swiggydata where Cost_for_2 > 400
+
+max rating restaurant
+select max(Ratings)as max_ratings from swiggydata
+
+poor ratings
+select * from swiggydata where Ratings < 3.3
+
+restaurant having italian, chinese. cusine 
+select Restaurant_name, Type from swiggydata where Type in ("Chinese" , "Italian")
+
+restaurant starting with r
+select Restaurant_name from swiggydata where Restaurant_name like "R%"
+
+
+restaurant not starting with H
+select Restaurant_name from swiggydata where Restaurant_name Not like "H%"
+
+FIND second highest rating
+select max(Ratings) as max from swiggydata where Ratings < (select max(Ratings) from swiggydata)
+
+with cte as (
+		select Restaurant_name,Ratings,
+        case
+			when Ratings>4.5 then "Excellent"
+            when Ratings>4 then "Good"
+            when Ratings > 3 then "Average"
+            else "Poor"
+            End as Status
+from swiggydata
+order by Ratings desc)
+select count(Restaurant_name), Status from cte group by Status
+
+
