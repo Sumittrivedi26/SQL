@@ -1,0 +1,182 @@
+CREATE database dannys_diner;
+SET search_path = dannys_diner;
+
+CREATE TABLE sales (
+  "customer_id" VARCHAR(1),
+  "order_date" DATE,
+  "product_id" INTEGER
+);
+
+INSERT INTO sales
+  ("customer_id", "order_date", "product_id")
+VALUES
+  ('A', '2021-01-01', '1'),
+  ('A', '2021-01-01', '2'),
+  ('A', '2021-01-07', '2'),
+  ('A', '2021-01-10', '3'),
+  ('A', '2021-01-11', '3'),
+  ('A', '2021-01-11', '3'),
+  ('B', '2021-01-01', '2'),
+  ('B', '2021-01-02', '2'),
+  ('B', '2021-01-04', '1'),
+  ('B', '2021-01-11', '1'),
+  ('B', '2021-01-16', '3'),
+  ('B', '2021-02-01', '3'),
+  ('C', '2021-01-01', '3'),
+  ('C', '2021-01-01', '3'),
+  ('C', '2021-01-07', '3');
+ 
+
+CREATE TABLE menu (
+  "product_id" INTEGER,
+  "product_name" VARCHAR(5),
+  "price" INTEGER
+);
+
+INSERT INTO menu
+  ("product_id", "product_name", "price")
+VALUES
+  ('1', 'sushi', '10'),
+  ('2', 'curry', '15'),
+  ('3', 'ramen', '12');
+  
+
+CREATE TABLE members (
+  "customer_id" VARCHAR(1),
+  "join_date" DATE
+);
+
+INSERT INTO members
+  ("customer_id", "join_date")
+VALUES
+  ('A', '2021-01-07'),
+  ('B', '2021-01-09');
+
+
+select * from SALES;
+
+SELECT * FROM MEMBERS;
+
+SELECT * FROM MENU;
+
+---What is the total amount each customer spent at the restaurant?
+
+SELECT SUM(M."price") FROM SALES AS S LEFT JOIN MENU AS M ON S."product_id" = M."product_id"
+GROUP BY S."customer_id";
+
+--How many days has each customer visited the restaurant?
+
+
+select "customer_id", COUNT(DISTINCT("order_date")) FROM SALES GROUP BY "customer_id";
+
+
+--What was the first item from the menu purchased by each customer?
+
+WITH JOINED AS 
+(SELECT * FROM SALES AS S  LEFT JOIN MENU AS M ON S."product_id" = M."product_id")
+
+SELECT distinct("customer_id"), FIRST_VALUE("product_name") OVER(PARTITION BY "customer_id"  ORDER BY "order_date"),
+last_value("product_name") OVER(PARTITION BY "customer_id"  ORDER BY "order_date")
+FROM JOINED;
+
+
+
+
+
+
+---What is the most purchased item on the menu and how many times was it purchased by all customers?
+
+SELECT "product_name", count("product_name") FROM SALES AS S  LEFT JOIN MENU AS M ON S."product_id" = M."product_id"
+group by("product_name")
+order by 2 desc
+limit 1;
+
+
+--Which item was the most popular for each customer
+with joinedtable as 
+(select "customer_id", "product_name", count("product_name") as cnt from sales as s left join menu as m on
+s."product_id"= m."product_id"
+group by "customer_id", "product_name")
+
+select distinct("customer_id") , first_value("product_name") over(partition by "customer_id"order by cnt desc) from joinedtable;
+
+
+---
+--with tab as (
+--select "customer_id", "product_name", count("product_name") as cnt from sales as s left join menu as m on
+--s."product_id"= m."product_id"
+--group by "customer_id", "product_name")
+
+--select "customer_id", "product_name" from tab where cnt in (Select max(cnt) from tab group by "customer_id")
+--group by "customer_id", "product_name";
+
+
+---Which item was purchased first by the customer after they became a member?
+
+select * from sales;
+
+select * from members;
+
+with new as 
+(select s.*, m."join_date", a."product_name" from sales as s left join members as m on s."customer_id" = m."customer_id"
+left join menu as a on s."product_id" = a."product_id")
+
+select distinct("customer_id"), first_value("product_name") over(partition by "customer_id" order by "order_date") from new
+where "order_date" > "join_date";
+
+
+---Which item was purchased just before the customer became a member?
+
+with new as 
+(select s.*, m."join_date", a."product_name" from sales as s left join members as m on s."customer_id" = m."customer_id"
+left join menu as a on s."product_id" = a."product_id")
+
+
+select distinct("customer_id"), last_value("product_name") over(partition by "customer_id" order by "order_date") from new
+where "order_date" < "join_date";
+
+
+
+--What is the total items and amount spent for each member before they became a member?
+
+
+
+with common as (
+select s.*, m."join_date", a."product_name", a."price" from sales as s left join members as m on s."customer_id" = m."customer_id"
+left join menu as a on s."product_id" = a."product_id")
+
+select "customer_id", count("product_name")  from common
+where "order_date" > "join_date"
+group by "customer_id"
+;
+
+
+with common as (
+select s.*, m."join_date", a."product_name", a."price" from sales as s left join members as m on s."customer_id" = m."customer_id"
+left join menu as a on s."product_id" = a."product_id")
+
+select "customer_id" , sum("price") from common where "order_date" > "join_date"
+group by "customer_id";
+
+
+---If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have?
+
+select s.*, m."join_date", a."product_name", a."price" ,
+
+case
+    when a."product_name" = 'sushi' then a."price"*10*2
+    when a."product_name" = 'curry' then 10*a."price"
+    when a."product_name" = 'sushi' then 10*a."price"
+end as pointer
+
+from sales as s left join members as m on s."customer_id" = m."customer_id"
+left join menu as a on s."product_id" = a."product_id"
+
+
+
+
+
+
+
+
+
