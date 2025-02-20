@@ -13,20 +13,26 @@ This repository contains a collection of SQL projects covering data cleaning, tr
 📌 Objective: Analyze order patterns, peak hours, and customer behavior using time-based analysis in Snowflake.
 🔹 Key Skills: Date functions, partitioning, window functions, CTEs.
 
-2️⃣ Covid Data Exploration (MySQL)
+2️⃣ Danny’s Diner Case Study (MySQL)
+
+📌 Objective: Analyze customer behavior at Danny’s Diner and provide insights into loyalty programs and spending patterns.
+🔹 Key Skills: Joins, CTEs, window functions, ranking.
+📂 Files: dannys_diner.sql
+
+3️⃣  Pizza Runner Case Study (MySQL)
+
+📌 Objective: Optimize pizza delivery operations by analyzing order efficiency, customer preferences, and runner performance.
+🔹 Key Skills: Data cleaning, string functions, case statements, joins.
+📂 Files: pizza_runner.sql
+
+4️⃣ Covid Data Exploration (MySQL)
 
 📌 Objective: Perform Exploratory Data Analysis (EDA) on an Covid dataset to uncover trends.
 🔹 Key Skills: Joins, subqueries, case statements, aggregate functions.
 📂 Files: car_insurance_eda.sql
 
-3️⃣ Olympics Insights (MySql)
+5️⃣ Olympics Insights (MySql)
 
 📌 Objective: Generate insights by analyzing Olympics Dataset.
 🔹 Key Skills: Snowflake schema design, views, stored procedures.
 
-
-4️⃣ Employee Data Management (MySQL)
-
-📌 Objective: Design a normalized database schema for efficient HR data management.
-🔹 Key Skills: Database design, indexing, triggers, transactions.
-📂 Files: employee_management.sql
