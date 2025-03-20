@@ -13,13 +13,13 @@ This repository contains a collection of SQL projects covering data cleaning, tr
 📌 Objective: Analyze order patterns, peak hours, and customer behavior using time-based analysis in Snowflake.
 🔹 Key Skills: Date functions, partitioning, window functions, CTEs.
 
-2️⃣ Danny’s Diner Case Study (MySQL)
+2️⃣ Danny’s Diner Case Study (Snowflake)
 
 📌 Objective: Analyze customer behavior at Danny’s Diner and provide insights into loyalty programs and spending patterns.
 🔹 Key Skills: Joins, CTEs, window functions, ranking.
 📂 Files: dannys_diner.sql
 
-3️⃣  Pizza Runner Case Study (MySQL)
+3️⃣  Pizza Runner Case Study (Snowflake)
 
 📌 Objective: Optimize pizza delivery operations by analyzing order efficiency, customer preferences, and runner performance.
 🔹 Key Skills: Data cleaning, string functions, case statements, joins.
@@ -35,4 +35,9 @@ This repository contains a collection of SQL projects covering data cleaning, tr
 
 📌 Objective: Generate insights by analyzing Olympics Dataset.
 🔹 Key Skills: Snowflake schema design, views, stored procedures.
+  
+6️⃣ Foodfi Case Study(Snowflake)
 
+🔹 Skills Used: SQL (Joins, Aggregations, CTEs, Window Functions, Subqueries)
+🔹 Topics Covered: Customer segmentation, revenue analysis, popular dishes, and order trends.
+🔹 Tools: PostgreSQL / MySQL / SQL Server
